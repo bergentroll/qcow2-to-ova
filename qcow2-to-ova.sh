@@ -1,39 +1,37 @@
 #!/bin/bash
 
-DEBIAN_VERSION=12      # 11, 12, 13, sid
-DEBIAN_NAME=bookworm   # bullseye (11), bookworm (12), trixie/daily (13), sid/daily (sid)
-DEBIAN_ARCH=amd64      # amd64 (11, 12), amd64-daily (13, sid)
+# 2024 Rodrigo Sepúlveda Heerwagen
+# 2025 Anton Karmanov
+
+DIST_VERSION='9.6'
+FILE_NAME='AlmaLinux-9-GenericCloud-9.6-20250522.x86_64'
+DIST_NAME_4HUMAN='AlmaLinux OS'
+CLOUD_INIT_DEFAULT_HOSTNAME='gnu-linux'
 
 # More information:
 # - https://knowledge.broadcom.com/external/article/315655/virtual-machine-hardware-versions.html
 VIRTUAL_SYSTEM_TYPE=vmx-19
 
-FILE_NAME=debian-$DEBIAN_VERSION-genericcloud-$DEBIAN_ARCH
 FILE_ORIG_EXT=qcow2
 FILE_DEST_EXT=vmdk
 FILE_SIGN_EXT=mf
-FILE_ORIG_URL=https://cdimage.debian.org/images/cloud/$DEBIAN_NAME/latest/$FILE_NAME.$FILE_ORIG_EXT
-# FILE_ORIG_URL=https://cloud.debian.org/images/cloud/$DEBIAN_NAME/latest/$FILE_NAME.$FILE_ORIG_EXT
 
 
 # More information:
 # - https://github.com/vmware/open-vm-tools/blob/master/open-vm-tools/lib/include/guest_os_tables.h
-# - https://github.com/vmware/pyvmomi/blob/master/pyVmomi/vim/vm/GuestOsDescriptor.pyi
-# - https://abiquo.atlassian.net/wiki/spaces/doc/pages/311377588/Guest+operating+system+definition+for+VMware
-OVF_OS_ID=96
-OVF_OS_TYPE=debian11_64Guest
+# - https://github.com/microsoft/omi/blob/master/Unix/share/omischema/CIM-2.32.0/System/CIM_OperatingSystem.mof
+OVF_OS_ID=101  # "Linux 64-Bit"
+OVF_OS_TYPE=almalinux_64Guest
 
 CURRENT_DATE=$(date +%Y%m%d)
 
-# You'll need the wget package
 if [ ! -f $FILE_NAME.$FILE_ORIG_EXT ]; then
-    wget $FILE_ORIG_URL
-else
-    echo "The file $FILE_NAME.$FILE_ORIG_EXT was already downloaded"
+    echo "Missing $FILE_NAME.$FILE_ORIG_EXT image file" 2>&1
+    exit 1
 fi
 
 # You'll need the qemu-img package
-if [ ! -f $FILE_NAME.$FILE_DEST_EXT ]; then
+if [ ! -f "$FILE_NAME.$FILE_DEST_EXT" ]; then
     qemu-img convert -f $FILE_ORIG_EXT -O $FILE_DEST_EXT -o subformat=streamOptimized $FILE_NAME.$FILE_ORIG_EXT $FILE_NAME.$FILE_DEST_EXT
 else
     echo "The file $FILE_NAME.$FILE_DEST_EXT was already created"
@@ -62,17 +60,17 @@ cat <<EOF | tee $FILE_NAME.ovf > /dev/null
     <Name>$FILE_NAME-$CURRENT_DATE</Name>
     <OperatingSystemSection ovf:id="$OVF_OS_ID" vmw:osType="$OVF_OS_TYPE">
       <Info>The kind of installed guest operating system</Info>
-      <Description>Debian GNU/Linux $DEBIAN_VERSION (64-bit)</Description>
+      <Description>${DIST_NAME_4HUMAN} $DIST_VERSION (64-bit)</Description>
     </OperatingSystemSection>
 
     <ProductSection ovf:required="false">
       <Info>Cloud-Init customization</Info>
-      <Product>Debian GNU/Linux $DEBIAN_VERSION ($CURRENT_DATE)</Product>
+      <Product>${DIST_NAME_4HUMAN} $DIST_VERSION ($CURRENT_DATE)</Product>
       <Property ovf:key="instance-id" ovf:type="string" ovf:userConfigurable="true" ovf:value="id-ovf">
           <Label>A Unique Instance ID for this instance</Label>
           <Description>Specifies the instance id.  This is required and used to determine if the machine should take "first boot" actions</Description>
       </Property>
-      <Property ovf:key="hostname" ovf:type="string" ovf:userConfigurable="true" ovf:value="debianguest">
+      <Property ovf:key="hostname" ovf:type="string" ovf:userConfigurable="true" ovf:value="${CLOUD_INIT_DEFAULT_HOSTNAME}">
           <Description>Specifies the hostname for the appliance</Description>
       </Property>
       <Property ovf:key="seedfrom" ovf:type="string" ovf:userConfigurable="true">

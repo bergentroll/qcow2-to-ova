@@ -1,55 +1,47 @@
-# debian-ova-creator
+# Qcow2 to OVA converter script
 
 ## Introduction
 
-This script helps you to download a Debian cloud image and to convert it into an OVA file.
+This script helps to convert a GNU/Linux Qcow2 cloud image into an OVA file.
 
 The OVF file included into this script was taken from an Ubuntu OVA file.
 
 ## Dependencies
 
-This script depends of wget and qemu-img packages that you may install using the following command:
-
-```sh
-sudo apt install -y wget qemu-img
-```
+This script depends on `qemu-img`.
 
 ## Usage
 
 Create a new directory:
 
-```sh
-mkdir debian-ova
+```bash
+mkdir qcow2ova
+cd qcow2ova
 ```
 
-Change directory:
+Download the script, e.g.:
 
-```sh
-cd debian-ova
+```bash
+wget https://github.com/bergentroll/qcow2-to-ova/qcow2-to-ova.sh
 ```
 
-Download this script:
+Put a Qcow2 image into the directory and edit variables on top of the script:
 
-```sh
-wget https://raw.githubusercontent.com/burbuja/debian-ova-creator/master/debian-ova-creator.sh
+```bash
+mv PATH_TO_IMAGE ./
+vim qcow2-to-ova.sh
 ```
 
-Edit it:
+Change permissions:
 
-```sh
-nano debian-ova-creator.sh
+```bash
+chmod a+x qcow2-to-ova.sh
 ```
 
-Change the permissions:
+Execute the script:
 
-```sh
-chmod +x debian-ova-creator.sh
-```
-
-Execute it:
-
-```sh
-./debian-ova-creator.sh
+```bash
+./qcow2-to-ova.sh
 ```
 
 ## License
