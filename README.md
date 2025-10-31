@@ -19,19 +19,19 @@ sudo apt install -y wget qemu-img
 Create a new directory:
 
 ```sh
- mkdir debian-ova
+mkdir debian-ova
 ```
 
 Change directory:
 
 ```sh
- cd debian-ova
+cd debian-ova
 ```
 
 Download this script:
 
 ```sh
-wget https://github.com/burbuja/debian-ova-creator/blob/master/debian-ova-creator.sh
+wget https://raw.githubusercontent.com/burbuja/debian-ova-creator/master/debian-ova-creator.sh
 ```
 
 Edit it:
