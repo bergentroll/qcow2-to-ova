@@ -67,14 +67,15 @@ cat <<EOF | tee $FILE_NAME.ovf > /dev/null
       <Info>Cloud-Init customization</Info>
       <Product>${DIST_NAME_4HUMAN} $DIST_VERSION ($CURRENT_DATE)</Product>
       <Property ovf:key="instance-id" ovf:type="string" ovf:userConfigurable="true" ovf:value="id-ovf">
-          <Label>A Unique Instance ID for this instance</Label>
+          <Label>An unique Instance ID for this instance</Label>
           <Description>Specifies the instance id.  This is required and used to determine if the machine should take "first boot" actions</Description>
       </Property>
       <Property ovf:key="hostname" ovf:type="string" ovf:userConfigurable="true" ovf:value="${CLOUD_INIT_DEFAULT_HOSTNAME}">
+          <Label>Hostname</Label>
           <Description>Specifies the hostname for the appliance</Description>
       </Property>
       <Property ovf:key="seedfrom" ovf:type="string" ovf:userConfigurable="true">
-          <Label>Url to seed instance data from</Label>
+          <Label>URL to seed instance data from</Label>
           <Description>This field is optional, but indicates that the instance should 'seed' user-data and meta-data from the given url.  If set to 'http://tinyurl.com/sm-' is given, meta-data will be pulled from http://tinyurl.com/sm-meta-data and user-data from http://tinyurl.com/sm-user-data.  Leave this empty if you do not want to seed from a url.</Description>
       </Property>
       <Property ovf:key="public-keys" ovf:type="string" ovf:userConfigurable="true" ovf:value="">
